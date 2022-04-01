@@ -12,7 +12,7 @@ import os
 /// Uniquely identifies the service.
 /// Make this unique to avoid interfering with other Multipeer services.
 /// Don't forget to update the project Info AND the project Info.plist property lists accordingly.
-let serviceType = "lab10"
+let serviceType = "l10-004-005"
 
 /// This structure is used at setup time to identify client needs to a server.
 /// Currently, it only contains an identifying message, but this can be expanded to contain version information and other data.
