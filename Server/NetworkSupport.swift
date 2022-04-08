@@ -332,6 +332,17 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
         do {
             let data = try JSONEncoder().encode(message)
             try session.send(data, toPeers: peers, with: .reliable)
+    
+            // TODO send only to specific player
+            /*
+            if (isPlayer1Turn){
+                try session.send(data, toPeers: peers[0], with: .reliable)
+            }
+            else{
+                try session.send(data, toPeers: peers[1], with: .reliable)
+            }
+             */
+            
             os_log("send \(message)")
         }
         catch let error {
