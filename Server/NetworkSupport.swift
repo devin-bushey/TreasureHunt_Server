@@ -124,11 +124,13 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
                 os_log("addPeer")
                 self.peers.append(peer)
                 if (self.peers.count == 1){
-                    self.send(message: "You are Player 1")
+                    self.send(message: "You are Player 1 ... waiting for Player 2")
                 }
+                
                 else if (self.peers.count == 2){
-                    self.send(message: "You are Player 2")
+                    self.send(message: "Welcome Player 2 ... Start game")
                 }
+                 
                 
             }
             
