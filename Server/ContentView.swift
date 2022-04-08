@@ -26,6 +26,12 @@ struct ContentView: View {
                         Text("Network Peer Name: " + networkSupport.peerName)
                         Text("Incoming Message: " + networkSupport.incomingMessage)
                         Text("Number of peers connected: " + String(networkSupport.peers.count))
+                        
+                        Button("Restart") {
+                            networkSupport.nearbyServiceAdvertiser?.stopAdvertisingPeer()
+                            advertising.toggle()
+                        }
+                        .padding()
                     }
                 }
                 else{

@@ -247,12 +247,12 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
                 self.player02_score += 1
             }
             print(self.treasureArray)
-            send(message: "Guess: " + guess + " Found! Score is Player 1: " + String(player01_score) + " Player 2: " + String(player02_score) + ". Is it player 1's turn? " + String(self.isPlayer1Turn))
+            send(message: "Found! Guess: " + guess + " Score is Player 1: " + String(player01_score) + " Player 2: " + String(player02_score) + ". Is it player 1's turn? " + String(self.isPlayer1Turn))
 
         }
         else{
             //send(message: "Player " + String(player) + " guessed " + guess + " and is Incorrect")
-            send(message: "Guess: " + guess + " Try Again! Score is Player 1: " + String(player01_score) + " Player 2: " + String(player02_score) + ". Is it player 1's turn? " + String(self.isPlayer1Turn))
+            send(message: "Try Again! Guess: " + guess + " Score is Player 1: " + String(player01_score) + " Player 2: " + String(player02_score) + ". Is it player 1's turn? " + String(self.isPlayer1Turn))
         }
 
 
