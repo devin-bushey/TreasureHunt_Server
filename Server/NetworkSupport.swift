@@ -12,7 +12,7 @@ import os
 /// Uniquely identifies the service.
 /// Make this unique to avoid interfering with other Multipeer services.
 /// Don't forget to update the project Info AND the project Info.plist property lists accordingly.
-let serviceType = "lab10"
+let serviceType = "l10-004-005-00"
 
 /// This structure is used at setup time to identify client needs to a server.
 /// Currently, it only contains an identifying message, but this can be expanded to contain version information and other data.
@@ -44,10 +44,31 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
     /// Contains the most recent incoming message.
     @Published var incomingMessage = ""
     
+    /// Contains the most recent PeerName from incoming message.
+    @Published var peerName = ""
+    
+    /// Contains the board, initialized to all 0's then treasures placed as 1's
+    @Published var treasureArray : TreasureBoard = TreasureBoard(numColumns: 10, numRows: 10, numTreasures: 5)
+    
+    /// Contains the number of treasures
+    @Published var numTreasures = 5
+    
+    /// Contains the description of the client (example: <MCPeerID: 0x600001710890 DisplayName = iPad Pro (9.7-inch)>)
+    @Published var player01_name = ""
+    @Published var player02_name = ""
+    
+    /// Contains the scores
+    @Published var player01_score = 0
+    @Published var player02_score = 0
+    
+    /// Contains a boolean to determine if its player 1 or player 2's turn
+    @Published var isPlayer1Turn : Bool = true
+    
     /// Create a Multipeer Server or Client
     /// - Parameter browse: true creates a Client, false creates a Server
     init(browse: Bool) {
         peerID = MCPeerID(displayName: UIDevice.current.name)
+        
         session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .none)
         if !browse {
             nearbyServiceAdvertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: serviceType)
@@ -65,7 +86,11 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
         if browse {
             nearbyServiceBrowser?.startBrowsingForPeers()
         }
+
     }
+    
+    
+    
     
     // MARK: - MCNearbyServiceAdvertiserDelegate Methods. See XCode documentation for details.
     
@@ -98,6 +123,20 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
             if !self.peers.contains(peer) {
                 os_log("addPeer")
                 self.peers.append(peer)
+                if (self.peers.count == 1){
+                    self.send(message: "You are Player 1 ... waiting for Player 2")
+                }
+                
+                else if (self.peers.count == 2){
+                    self.send(message: "Welcome Player 2 ... Start game")
+                }
+                 
+                
+            }
+            
+            if self.peers.count == 2{
+                self.player01_name = self.peers[0].description
+                self.player02_name = self.peers[1].description
             }
         }
     }
@@ -125,7 +164,13 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         let info2 = info?.description ?? ""
         os_log("foundPeer \(peerID) \(info2)")
-        addPeer(peer: peerID)
+        if (peers.count < 2){
+            addPeer(peer: peerID)
+        }
+        else{
+            print("Two peers already connected")
+        }
+        
     }
     
     /// Inherited from MCNearbyServiceBrowserDelegate.browser(_:lostPeer:).
@@ -158,13 +203,68 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
         do {
             let request = try JSONDecoder().decode(String.self, from: didReceive)
             os_log("didReceive \(request) \(fromPeer)")
+            
             DispatchQueue.main.async {
                 self.incomingMessage = request
+                self.peerName = fromPeer.displayName
+                
+                if self.peers.count == 2{
+                    
+                    if (self.isPlayer1Turn && self.player01_name == fromPeer.description){
+                        self.validateGuess(guess: request, playerId: fromPeer.description, player: 1)
+                        self.isPlayer1Turn = false
+                    }
+                    else if (!self.isPlayer1Turn && self.player02_name == fromPeer.description){
+                        self.validateGuess(guess: request, playerId: fromPeer.description, player: 2)
+                        self.isPlayer1Turn = true
+                    }
+                }
+                
             }
         }
         catch let error {
-            os_log("didReceive \(error.localizedDescription)")
+            os_log("error didReceive \(error.localizedDescription)")
         }
+    }
+    
+    func validateGuess(guess: String, playerId: String, player: Int){
+        
+        os_log("**** Validating guess \(guess)")
+        
+        let x = guess[guess.startIndex].wholeNumberValue ?? -1
+        let y = guess[(guess.index(before: guess.endIndex))].wholeNumberValue ?? -1
+        
+        if x > self.treasureArray.numColumns { return }
+        if y > self.treasureArray.numRows { return }
+        
+        if (self.numTreasures == 0){
+            if (self.player01_score > self.player02_score){
+                send(message: "Game Over. Player 01 wins")
+            }
+            else{
+                send(message: "Game Over. Player 02 wins")
+            }
+        }
+        else if (self.treasureArray.board[x][y] == 1){
+            
+            self.numTreasures -= 1
+            self.treasureArray.board[x][y] = 0
+            if (player == 1){
+                self.player01_score += 1
+            }
+            else if (player == 2){
+                self.player02_score += 1
+            }
+            print(self.treasureArray)
+            send(message: "Found! Guess: " + guess + " Score is Player 1: " + String(player01_score) + " Player 2: " + String(player02_score) + ". Is it player 1's turn? " + String(self.isPlayer1Turn))
+
+        }
+        else{
+            //send(message: "Player " + String(player) + " guessed " + guess + " and is Incorrect")
+            send(message: "Try Again! Guess: " + guess + " Score is Player 1: " + String(player01_score) + " Player 2: " + String(player02_score) + ". Is it player 1's turn? " + String(self.isPlayer1Turn))
+        }
+
+
     }
     
     /// Inherited from MCSessionDelegate.session(_:didStartReceivingResourceWithName:fromPeer:with:).
@@ -232,6 +332,17 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
         do {
             let data = try JSONEncoder().encode(message)
             try session.send(data, toPeers: peers, with: .reliable)
+    
+            // TODO send only to specific player
+            /*
+            if (isPlayer1Turn){
+                try session.send(data, toPeers: peers[0], with: .reliable)
+            }
+            else{
+                try session.send(data, toPeers: peers[1], with: .reliable)
+            }
+             */
+            
             os_log("send \(message)")
         }
         catch let error {
