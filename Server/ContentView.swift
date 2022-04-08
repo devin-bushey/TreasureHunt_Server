@@ -20,18 +20,23 @@ struct ContentView: View {
                 }
             }
             else {
-                VStack{
-                    Text("Test")
-                    Text("Is Player 1's turn? " + String(networkSupport.isPlayer1Turn))
-                    Text("Network Peer Name: " + networkSupport.peerName)
-                    Text("Incoming Message: " + networkSupport.incomingMessage)
-                    Text("Number of peers connected: " + String(networkSupport.peers.count))
+                if (networkSupport.numTreasures > 0){
+                    VStack{
+                        Text("Is Player 1's turn? " + String(networkSupport.isPlayer1Turn))
+                        Text("Network Peer Name: " + networkSupport.peerName)
+                        Text("Incoming Message: " + networkSupport.incomingMessage)
+                        Text("Number of peers connected: " + String(networkSupport.peers.count))
+                    }
                 }
-                Button("Stop") {
-                    networkSupport.nearbyServiceAdvertiser?.stopAdvertisingPeer()
-                    advertising.toggle()
+                else{
+                    Text("Game Over")
+                    Button("Restart") {
+                        networkSupport.nearbyServiceAdvertiser?.stopAdvertisingPeer()
+                        advertising.toggle()
+                    }
+                    .padding()
                 }
-                .padding()
+                
             }
         }
         .padding()
