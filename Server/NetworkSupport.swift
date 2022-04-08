@@ -12,7 +12,7 @@ import os
 /// Uniquely identifies the service.
 /// Make this unique to avoid interfering with other Multipeer services.
 /// Don't forget to update the project Info AND the project Info.plist property lists accordingly.
-let serviceType = "l10-004-005"
+let serviceType = "l10-004-005-00"
 
 /// This structure is used at setup time to identify client needs to a server.
 /// Currently, it only contains an identifying message, but this can be expanded to contain version information and other data.
@@ -123,6 +123,13 @@ class NetworkSupport: NSObject, ObservableObject, MCNearbyServiceAdvertiserDeleg
             if !self.peers.contains(peer) {
                 os_log("addPeer")
                 self.peers.append(peer)
+                if (self.peers.count == 1){
+                    self.send(message: "You are Player 1")
+                }
+                else if (self.peers.count == 2){
+                    self.send(message: "You are Player 2")
+                }
+                
             }
             
             if self.peers.count == 2{
