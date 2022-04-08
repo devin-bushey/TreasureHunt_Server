@@ -17,6 +17,7 @@
 		4C9AD05227C85880008A8830 /* NetworkSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9AD05127C85880008A8830 /* NetworkSupport.swift */; };
 		4C9AD05327C85880008A8830 /* NetworkSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9AD05127C85880008A8830 /* NetworkSupport.swift */; };
 		4C9AD05427C85880008A8830 /* NetworkSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9AD05127C85880008A8830 /* NetworkSupport.swift */; };
+		F33E3A7A2800BCD30020E4E3 /* TreasureBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33E3A792800BCD30020E4E3 /* TreasureBoard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		4C9AD00E27C8584F008A8830 /* ServerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4C9AD05127C85880008A8830 /* NetworkSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSupport.swift; sourceTree = "<group>"; };
 		4C9AD05927C85DEB008A8830 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F33E3A792800BCD30020E4E3 /* TreasureBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreasureBoard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				4C9AD05127C85880008A8830 /* NetworkSupport.swift */,
 				4C9ACFF527C8584F008A8830 /* Assets.xcassets */,
 				4C9ACFF727C8584F008A8830 /* Preview Content */,
+				F33E3A792800BCD30020E4E3 /* TreasureBoard.swift */,
 			);
 			path = Server;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C9ACFF427C8584E008A8830 /* ContentView.swift in Sources */,
+				F33E3A7A2800BCD30020E4E3 /* TreasureBoard.swift in Sources */,
 				4C9ACFF227C8584E008A8830 /* ServerApp.swift in Sources */,
 				4C9AD05227C85880008A8830 /* NetworkSupport.swift in Sources */,
 			);
